@@ -35,3 +35,17 @@ model Product {
   categories Category[]
   @@map("products")
 }
+
+// 3. Variantes de um produto (café em pó ou em grãos, diferentes pacotes de peso, etc...)
+model ProductVariant {
+  id String @id @default(uuid())
+  product_id String
+  type String // Grão ou moído
+  weight Int
+  price Float
+  stock_quantity Int @default(0)
+  product Product @relation(fields: [product_id], references: [id])
+  cart_items CartItem[]
+  @@map("product_variants")
+}
+
