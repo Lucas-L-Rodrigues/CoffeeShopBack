@@ -57,3 +57,14 @@ model Category {
   @@map("categories")
 }
 
+// 5. Carrinho de Compras
+model Cart {
+  id String @id @default(uuid())
+  user_id String
+  status String @default("Open") // "Open" para quando o pedido não foi finalizado e "Closed" quando virar pedido
+  created_at DateTime @default(now())
+  user User @relation(fields: [user_id], references: [id])
+  items CartItem[]
+  @@map("carts")
+}
+
