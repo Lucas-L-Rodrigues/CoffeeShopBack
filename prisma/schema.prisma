@@ -68,3 +68,13 @@ model Cart {
   @@map("carts")
 }
 
+// 6. Itens do carrinho
+model CartItem {
+  id String @id @default(uuid())
+  cart_id String
+  product_variant_id String
+  quantity Int
+  cart Cart @relation(fields: [cart_id], references: [id])
+  variant ProductVariant @relation(fields: [product_variant_id], references: [id])
+  @@map("cart_items")
+}
