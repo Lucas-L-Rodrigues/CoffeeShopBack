@@ -13,13 +13,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Enums
+enum UserRole {
+  ADMIN
+  CUSTOMER
+}
+enum ProductType {
+  GRAIN
+  GROUND
+}
+enum CartStatus {
+  OPEN
+  CLOSED
+}
+
 // 1. Usuários
 model User {
   id String @id @default(uuid()) // Aparentemente é melhor para evitar expor a informação de quantos usuários estão no BD
   name String
   email String @unique
   password_hash String
-  role String @default("customer") // "admin" ou "customer"
+  role UserRole @default(CUSTOMER)
   carts Cart[]
   @@map("users")
 }
@@ -40,7 +54,7 @@ model Product {
 model ProductVariant {
   id String @id @default(uuid())
   product_id String
-  type String // Grão ou moído
+  type ProductType @default(GROUND)
   weight Int
   price Decimal
   stock_quantity Int @default(0)
@@ -61,7 +75,7 @@ model Category {
 model Cart {
   id String @id @default(uuid())
   user_id String
-  status String @default("Open") // "Open" para quando o pedido não foi finalizado e "Closed" quando virar pedido
+  status CartStatus @default(OPEN)
   created_at DateTime @default(now())
   user User @relation(fields: [user_id], references: [id])
   items CartItem[]
