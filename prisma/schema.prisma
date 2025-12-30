@@ -49,3 +49,11 @@ model ProductVariant {
   @@map("product_variants")
 }
 
+// 4. Categorias
+model Category {
+  id String @id @default(uuid())
+  name String @unique
+  products Product[]
+  @@map("categories")
+}
+
