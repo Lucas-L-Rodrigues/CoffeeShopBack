@@ -1,6 +1,7 @@
 {
   "name": "CoffeeShopBack",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
   "author": "Lucas-L-Rodrigues <lucaslima.48a@gmail.com>",
   "license": "MIT",
@@ -9,9 +10,13 @@
     "nodemon": "^3.1.11",
     "prisma": "5.10.0",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
   "dependencies": {
     "@prisma/client": "5.10.0"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   }
 }
