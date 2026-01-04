@@ -19,10 +19,12 @@ enum UserRole {
   ADMIN
   CUSTOMER
 }
+
 enum ProductType {
   GRAIN
   GROUND
 }
+
 enum CartStatus {
   OPEN
   CLOSED
@@ -30,66 +32,86 @@ enum CartStatus {
 
 // 1. Usuários
 model User {
-  id String @id @default(uuid()) // Aparentemente é melhor para evitar expor a informação de quantos usuários estão no BD
-  name String
-  email String @unique
+  id            String   @id @default(uuid()) // Aparentemente é melhor para evitar expor a informação de quantos usuários estão no BD
+  name          String
+  email         String   @unique
   password_hash String
-  role UserRole @default(CUSTOMER)
-  carts Cart[]
+  role          UserRole @default(CUSTOMER)
+  carts         Cart[]
+
   @@map("users")
 }
 
 // 2. Produtos
 model Product {
-  id String @id @default(uuid())
-  name String
-  description String
-  image_url String
-  active Boolean
-  variants ProductVariant[]
-  categories Category[]
+  id              String            @id @default(uuid())
+  name            String
+  description     String
+  image_url       String
+  // active          Boolean
+  variants        ProductVariant[]
+  // categories      Category[]
+  CategoryProduct CategoryProduct[]
+
   @@map("products")
 }
 
 // 3. Variantes de um produto (café em pó ou em grãos, diferentes pacotes de peso, etc...)
 model ProductVariant {
-  id String @id @default(uuid())
-  product_id String
-  type ProductType @default(GROUND)
-  weight Int
-  price Decimal
-  stock_quantity Int @default(0)
-  product Product @relation(fields: [product_id], references: [id])
-  cart_items CartItem[]
+  id             String      @id @default(uuid())
+  product_id     String
+  type           ProductType @default(GROUND)
+  weight         Int
+  price          Decimal
+  active         Boolean     @default(true)
+  stock_quantity Int         @default(0)
+  product        Product     @relation(fields: [product_id], references: [id])
+  cart_items     CartItem[]
+
   @@map("product_variants")
 }
 
 // 4. Categorias
 model Category {
-  id String @id @default(uuid())
-  name String @unique
-  products Product[]
+  id              String            @id @default(uuid())
+  name            String            @unique
+  // products        Product[]
+  CategoryProduct CategoryProduct[]
+
   @@map("categories")
 }
 
 // 5. Carrinho de Compras
 model Cart {
-  id String @id @default(uuid())
-  user_id String
-  status CartStatus @default(OPEN)
-  created_at DateTime @default(now())
-  user User @relation(fields: [user_id], references: [id])
-  items CartItem[]
+  id         String     @id @default(uuid())
+  user_id    String
+  status     CartStatus @default(OPEN)
+  created_at DateTime   @default(now())
+  user       User       @relation(fields: [user_id], references: [id])
+  items      CartItem[]
+
   @@map("carts")
 }
 
 // 6. Itens do carrinho
 model CartItem {
-  id String @id @default(uuid())
-  cart_id String
+  id                 String         @id @default(uuid())
+  cart_id            String
   product_variant_id String
-  quantity Int
-  cart Cart @relation(fields: [cart_id], references: [id])
-  variant ProductVariant @relation(fields: [product_variant_id], references: [id])
+  quantity           Int
+  cart               Cart           @relation(fields: [cart_id], references: [id])
+  variant            ProductVariant @relation(fields: [product_variant_id], references: [id])
+
   @@map("cart_items")
+}
+
+model CategoryProduct {
+  category_id String
+  product_id  String
+
+  category Category @relation(fields: [category_id], references: [id])
+  product  Product  @relation(fields: [product_id], references: [id])
+
+  @@id([category_id, product_id])
+  @@map("category_to_product")
 }
